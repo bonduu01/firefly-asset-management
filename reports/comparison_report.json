@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "total": 3,
+    "match": 1,
+    "modified": 1,
+    "missing": 1
+  },
+  "results": [
+    {
+      "CloudResourceItem": {
+        "id": "res-001",
+        "type": "s3",
+        "region": "us-east-1",
+        "tags": {
+          "env": "prod"
+        }
+      },
+      "IacResourceItem": {
+        "id": "res-001",
+        "type": "s3",
+        "region": "us-east-1",
+        "tags": {
+          "env": "prod"
+        }
+      },
+      "State": "Match",
+      "ChangeLog": []
+    },
+    {
+      "CloudResourceItem": {
+        "id": "res-002",
+        "type": "ec2",
+        "size": "t3.large",
+        "region": "us-west-2"
+      },
+      "IacResourceItem": {
+        "id": "res-002",
+        "type": "ec2",
+        "size": "t3.small",
+        "region": "us-west-2"
+      },
+      "State": "Modified",
+      "ChangeLog": [
+        {
+          "field": "size",
+          "cloud_value": "t3.large",
+          "iac_value": "t3.small"
+        }
+      ]
+    },
+    {
+      "CloudResourceItem": {
+        "id": "res-003",
+        "type": "rds",
+        "engine": "postgres",
+        "region": "us-east-1"
+      },
+      "IacResourceItem": null,
+      "State": "Missing",
+      "ChangeLog": []
+    }
+  ]
+}

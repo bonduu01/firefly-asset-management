@@ -1,0 +1,14 @@
+[
+  {
+    "id": "res-001",
+    "type": "s3",
+    "region": "us-east-1",
+    "tags": { "env": "prod" }
+  },
+  {
+    "id": "res-002",
+    "type": "ec2",
+    "size": "t3.small",
+    "region": "us-west-2"
+  }
+]
