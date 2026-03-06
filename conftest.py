@@ -1,15 +1,10 @@
 import json
 import pytest
 from pathlib import Path
-from playwright.sync_api import sync_playwright
 
+# Anchor all paths to the project root (directory containing conftest.py)
 BASE_DIR = Path(__file__).parent
 
-# @pytest.fixture(scope="session")
-# def cloud_resources():
-#     path = Path("data/cloud_resources.json")
-#     with open(path) as f:
-#         return json.load(f)
 
 @pytest.fixture(scope="session")
 def cloud_resources():
@@ -17,12 +12,6 @@ def cloud_resources():
     with open(path) as f:
         return json.load(f)
 
-
-# @pytest.fixture(scope="session")
-# def iac_resources():
-#     path = Path("data/iac_resources.json")
-#     with open(path) as f:
-#         return json.load(f)
 
 @pytest.fixture(scope="session")
 def iac_resources():
@@ -32,10 +21,6 @@ def iac_resources():
 
 
 @pytest.fixture(scope="session")
-def browser_context():
-    """Headless browser context (Playwright) — used if UI validation is needed."""
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context()
-        yield context
-        browser.close()
+def output_path(tmp_path_factory):
+    """Provides a persistent temp path for report output during the test session."""
+    return tmp_path_factory.mktemp("reports") / "comparison_report.json"

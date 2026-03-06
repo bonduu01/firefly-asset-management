@@ -1,5 +1,8 @@
-pytest
-pytest-playwright
-playwright
-dataclasses-json
-boto3
+# Core test framework
+pytest==8.3.5
+pytest-playwright==0.7.2   # kept for Playwright fixture support in conftest
+allure-pytest==2.13.5
+
+# AWS / LocalStack S3 upload (bonus feature)
+boto3==1.35.0
+botocore

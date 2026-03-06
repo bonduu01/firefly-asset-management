@@ -4,11 +4,13 @@ from typing import Optional, List, Literal
 # Allowed state values
 State = Literal["Missing", "Match", "Modified"]
 
+
 @dataclass
 class ChangeLogEntry:
-    field: str
-    cloud_value: object
-    iac_value: object
+    KeyName: str        # ✅ Fixed: was 'field'
+    CloudValue: object  # ✅ Fixed: was 'cloud_value'
+    IacValue: object    # ✅ Fixed: was 'iac_value'
+
 
 @dataclass
 class AssetComparisonItem:
@@ -24,9 +26,9 @@ class AssetComparisonItem:
             "State": self.State,
             "ChangeLog": [
                 {
-                    "field": c.field,
-                    "cloud_value": c.cloud_value,
-                    "iac_value": c.iac_value
+                    "KeyName": c.KeyName,
+                    "CloudValue": c.CloudValue,
+                    "IacValue": c.IacValue
                 }
                 for c in self.ChangeLog
             ]

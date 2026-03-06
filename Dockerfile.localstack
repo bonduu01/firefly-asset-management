@@ -1,9 +1,0 @@
-FROM localstack/localstack:latest
-
-ENV SERVICES=s3
-ENV DEFAULT_REGION=us-east-1
-ENV DATA_DIR=/tmp/localstack/data
-
-# Bootstrap script: create bucket on startup
-COPY init-s3.sh /etc/localstack/init/ready.d/init-s3.sh
-RUN chmod +x /etc/localstack/init/ready.d/init-s3.sh
