@@ -1,0 +1,26 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_report_items_have_required_keys","Every report item must contain all four required top-level keys."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_comparison_runs_without_error","Smoke test: comparison must complete without raising any exception."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_iac_array_longer_than_cloud","Extra IaC elements must appear with CloudValue=None."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_array_length_difference_cloud_longer","Extra cloud elements must appear with IacValue=None."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_changelog_entries_use_spec_field_names","
+        ChangeLog entries must use the spec field names:
+            KeyName / CloudValue / IacValue
+        and must NOT contain the old snake_case names:
+            field / cloud_value / iac_value
+        "
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_mixed_nested_objects_and_arrays","Complex mixed structures produce combined dot + bracket notation keys."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_nested_array_inside_array","Arrays nested inside arrays must use chained bracket notation key[i][j]."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_match_resources_have_empty_changelog","Resources with State=Match must have an empty ChangeLog."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_identical_arrays_produce_no_changelog","Identical arrays must result in State=Match with an empty ChangeLog."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","1","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_nested_objects_inside_array","Fields inside objects that are array elements use key[i].field notation."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_all_cloud_resources_are_analyzed","Every cloud resource must produce exactly one result entry."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","1","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_modified_resources_have_changelog","Resources with State=Modified must have at least one ChangeLog entry."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_state_values_are_valid","Every result State must be one of: Match | Modified | Missing."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_generate_persistent_report","
+        Write the final comparison report to reports/ for human inspection.
+        This is the report that CI/CD uploads as a build artifact.
+        "
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_array_element_difference_detected","A differing array element must produce a bracket-notation changelog entry."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","1","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_report_is_generated","Report file must exist and be a flat JSON array (spec requirement)."
+"passed","Tue Mar 10 09:17:46 UTC 2026","Tue Mar 10 09:17:46 UTC 2026","0","tests","test_asset_comparison","TestFireflyAssetManagement","","","test_missing_resources_have_no_iac_item","Resources with State=Missing must have IacResourceItem=None."

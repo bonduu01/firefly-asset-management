@@ -1,0 +1,12 @@
+
+=======================================================
+  📊  Firefly Comparison Summary
+=======================================================
+  Total     : 3
+  ✅ Match   : 1
+  ⚠️  Modified: 1
+  ❌ Missing : 1
+=======================================================
+
+✅ Report written → /tmp/pytest-of-runner/pytest-0/test_changelog_entries_use_spe0/comparison_report.json
+

@@ -1,0 +1,12 @@
+
+=======================================================
+  📊  Firefly Comparison Summary
+=======================================================
+  Total     : 3
+  ✅ Match   : 1
+  ⚠️  Modified: 1
+  ❌ Missing : 1
+=======================================================
+
+✅ Report written → /home/runner/work/firefly-asset-management/firefly-asset-management/reports/comparison_report.json
+
