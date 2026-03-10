@@ -1,15 +1,13 @@
-name: 🔥 Firefly Asset Management — Test & Allure Report
+name: 🔥 Firefly — Test & Publish Allure Report
 
 on:
   push:
-    branches:
-      - main
-  # pull_request:
-  #   branches:
-  #     - main
-  workflow_dispatch:  # Allow manual trigger from GitHub UI
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:   # allow manual trigger from GitHub UI
 
-# Grant write permission so the workflow can publish to GitHub Pages
+# Required for peaceiris/actions-gh-pages to push to gh-pages branch
 permissions:
   contents: write
   pages: write
@@ -17,68 +15,66 @@ permissions:
 
 jobs:
   test-and-report:
-    name: Run Tests & Publish Allure Report
+    name: Run Tests & Deploy Allure to GitHub Pages
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Checkout source code ────────────────────────────────────────────
+
+      # ── 1. Checkout ──────────────────────────────────────────────────────
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Set up Python ───────────────────────────────────────────────────
+      # ── 2. Python setup ───────────────────────────────────────────────────
       - name: 🐍 Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
-      # ── 3. Install Python dependencies ────────────────────────────────────
-      - name: 📦 Install dependencies
+      # ── 3. Install dependencies ───────────────────────────────────────────
+      - name: 📦 Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install allure-pytest
 
-      # ── 4. Install Playwright browsers ────────────────────────────────────
-      - name: 🎭 Install Playwright browsers
+      # ── 4. Install Playwright browser ─────────────────────────────────────
+      - name: 🎭 Install Playwright Chromium
         run: playwright install chromium --with-deps
 
-      # ── 5. Run pytest and collect Allure results ──────────────────────────
-      - name: 🧪 Run tests with Allure reporting
+      # ── 5. Run tests ──────────────────────────────────────────────────────
+      - name: 🧪 Run pytest with Allure collection
         run: |
           pytest tests/ -v \
             --alluredir=allure-results \
-            --tb=short \
-            -q
-        continue-on-error: true  # Allow report generation even if tests fail
+            --tb=short
+        continue-on-error: true   # allow report generation even if tests fail
 
-      # ── 6. Install Allure CLI ──────────────────────────────────────────────
+      # ── 6. Install Allure CLI ─────────────────────────────────────────────
       - name: 🔧 Install Allure CLI
         run: |
-          curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          curl -fsSL -o allure.tgz \
+            https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           tar -xzf allure.tgz
           sudo mv allure-2.27.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
           allure --version
 
-      # ── 7. Load previous Allure history (for trend charts) ────────────────
-      - name: 📊 Load Allure history from gh-pages
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages-history
-
-      - name: 🗂️ Copy history into allure-results
+      # ── 7. Restore Allure history from gh-pages (enables trend charts) ───
+      - name: 📊 Restore Allure history
         if: always()
         continue-on-error: true
         run: |
-          if [ -d "gh-pages-history/history" ]; then
-            cp -r gh-pages-history/history allure-results/history
-            echo "✅ Allure history restored from gh-pages"
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            git fetch origin gh-pages --depth=1
+            git checkout origin/gh-pages -- history 2>/dev/null || true
+            if [ -d "history" ]; then
+              mkdir -p allure-results/history
+              cp -r history/. allure-results/history/
+              echo "✅ Allure history restored"
+            fi
           else
-            echo "ℹ️ No previous history found — first run"
+            echo "ℹ️  gh-pages branch does not exist yet — skipping history"
           fi
 
       # ── 8. Generate Allure HTML report ────────────────────────────────────
@@ -86,9 +82,23 @@ jobs:
         if: always()
         run: |
           allure generate allure-results --clean -o allure-report
-          echo "✅ Allure report generated at: allure-report/"
+          ls -la allure-report/
 
-      # ── 9. Upload Allure report as a build artifact ───────────────────────
+      # ── 9. Add .nojekyll so GitHub Pages serves Allure _* folders ─────────
+      - name: 🛑 Disable Jekyll processing
+        if: always()
+        run: touch allure-report/.nojekyll
+
+      # ── 10. Verify index.html exists before deploying ────────────────────
+      - name: 🔍 Verify report structure
+        if: always()
+        run: |
+          if [ ! -f "allure-report/index.html" ]; then
+            echo "❌ index.html not found in allure-report/" && exit 1
+          fi
+          echo "✅ index.html confirmed"
+
+      # ── 11. Upload Allure HTML as build artifact ──────────────────────────
       - name: 📤 Upload Allure report artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -97,8 +107,8 @@ jobs:
           path: allure-report/
           retention-days: 30
 
-      # ── 10. Upload comparison_report.json as artifact ─────────────────────
-      - name: 📤 Upload JSON comparison report
+      # ── 12. Upload comparison_report.json as build artifact ───────────────
+      - name: 📤 Upload comparison report artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -106,7 +116,7 @@ jobs:
           path: reports/comparison_report.json
           retention-days: 30
 
-      # ── 11. Deploy to GitHub Pages ────────────────────────────────────────
+      # ── 13. Deploy to GitHub Pages ────────────────────────────────────────
       - name: 🚀 Deploy Allure report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
@@ -114,18 +124,18 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: allure-report
+          force_orphan: true        # clean slate on every deploy
           keep_files: false
-          commit_message: "ci: update Allure report for ${{ github.sha }}"
+          commit_message: "ci: Allure report for ${{ github.sha }}"
 
-      # ── 12. Print report URL ───────────────────────────────────────────────
+      # ── 14. Print live report URL ─────────────────────────────────────────
       - name: 🔗 Print Allure report URL
         if: always()
         run: |
-          REPO="${{ github.repository }}"
-          OWNER=$(echo "$REPO" | cut -d'/' -f1)
-          REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
+          OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          REPO=$(echo  "${{ github.repository }}" | cut -d'/' -f2)
           echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "  📊 Allure Report published!"
-          echo "  🔗 URL: https://${OWNER}.github.io/${REPO_NAME}/"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "  📊  Allure Report published!"
+          echo "  🔗  https://${OWNER}.github.io/${REPO}/"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

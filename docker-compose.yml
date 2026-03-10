@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+
+  # ── LocalStack — local AWS S3 simulation ─────────────────────────────────
+  localstack:
+    build:
+      context: .
+      dockerfile: Dockerfile.localstack
+    container_name: firefly-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1
+      - DATA_DIR=/tmp/localstack/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  # ── Analyzer — runs tests then uploads report to LocalStack S3 ────────────
+  analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: firefly-analyzer
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - S3_ENDPOINT_URL=http://localstack:4566
+      - S3_BUCKET=firefly-reports
+    volumes:
+      # Mount reports/ so the JSON file is accessible on the host after the run
+      - "./reports:/app/reports"

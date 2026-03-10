@@ -14,12 +14,12 @@ env/
 dist/
 build/
 
-# ── Pytest / Test output ──────────────────────────────────────────────────────
+# ── Pytest / Allure ───────────────────────────────────────────────────────────
 .pytest_cache/
 allure-results/
 allure-report/
 
-# ── Reports (generated — don't commit output) ─────────────────────────────────
+# ── Generated report (do not commit output) ───────────────────────────────────
 reports/
 
 # ── Docker ────────────────────────────────────────────────────────────────────

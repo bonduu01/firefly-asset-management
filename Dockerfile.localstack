@@ -1,0 +1,10 @@
+# ── Firefly LocalStack S3 Container ──────────────────────────────────────────
+FROM localstack/localstack:latest
+
+ENV SERVICES=s3
+ENV DEFAULT_REGION=us-east-1
+ENV DATA_DIR=/tmp/localstack/data
+
+# Bootstrap script auto-creates the S3 bucket when LocalStack becomes ready
+COPY init-s3.sh /etc/localstack/init/ready.d/init-s3.sh
+RUN chmod +x /etc/localstack/init/ready.d/init-s3.sh
